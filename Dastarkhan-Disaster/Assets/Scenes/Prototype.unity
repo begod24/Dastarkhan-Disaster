@@ -1313,7 +1313,7 @@ GameObject:
   - component: {fileID: 1670140137}
   - component: {fileID: 1670140136}
   - component: {fileID: 1670140140}
-  - component: {fileID: 1670140139}
+  - component: {fileID: 1670140141}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1363,8 +1363,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 50
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1388,29 +1388,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1670140135}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
+  m_LocalPosition: {x: 0, y: 10, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1670140139
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1670140135}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85e5eaa5aa2888e49a9a2f3c81f569fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DastarkhanDisaster.Gameplay.CameraRig.TopDownCamera
-  _target: {fileID: 870555514}
-  _offset: {x: 0, y: 12, z: -7}
-  _pitch: 60
-  _smoothTime: 0.15
+  m_LocalEulerAnglesHint: {x: 50, y: 0, z: 0}
 --- !u!114 &1670140140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1455,6 +1439,21 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &1670140141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670140135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 791d974d2dd01a74d81391339d3fd6a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DastarkhanDisaster.Gameplay.CameraRig.LevelCamera
+  _levelCenter: {fileID: 0}
+  _offset: {x: 0, y: 8, z: -5}
+  _pitch: 50
 --- !u!1 &1716688417
 GameObject:
   m_ObjectHideFlags: 0
