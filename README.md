@@ -78,17 +78,6 @@ Full release adds: kazy, sorpa, shelpek, shubat.
  
 ---
  
-## Characters
- 
-| Character | Role | Passive Ability |
-|-----------|------|-----------------|
-| **Apa** | Grandma | Never burns tandoor items — cooks to perfection by instinct |
-| **Malika** | Young Bride | Carries two items at once (tray balance), lower speed |
-| **Jaksybek** | Shepherd | Instantly herds kitchen animals out of the way |
-| **Daniyar** | Cook's Apprentice | Chops and kneads 30% faster, lower Respect bonus |
- 
----
- 
 ## Level Progression
  
 | # | Level | Setting | Introduces |
@@ -126,13 +115,6 @@ Supports keyboard and gamepad.
 | **Figma** | UI/UX design |
 | **GIMP** | Texture and sprite editing |
 | **Mirror / Fishnet** | Networking (local co-op first, online later) |
- 
-### Key Architecture Decisions
-- **ScriptableObjects** for recipe definitions with ordered step validation
-- **State machine** per ingredient for cook/assembly tracking
-- **Event system** for Elder demands and kitchen chaos events
-- **Per-guest ScriptableObject state** for Respect meter management
-- Top-down 2.5D perspective with isometric tilt — no complex 3D navigation required
  
 ---
  
