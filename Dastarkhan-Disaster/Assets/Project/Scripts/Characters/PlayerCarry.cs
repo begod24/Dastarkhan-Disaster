@@ -1,35 +1,41 @@
 using UnityEngine;
 
-namespace DastarkhanDisaster.Gameplay.Player
+public class PlayerCarry : MonoBehaviour
 {
-    /// <summary>
-    /// Stores and parents a single carried GameObject to a hand/anchor transform.
-    /// Knows nothing about food, recipes, or stations.
-    /// SOLID: Single Responsibility - only manages the held reference + parenting.
-    /// </summary>
-    public class PlayerCarry : MonoBehaviour
+    [SerializeField] private Transform _carryAnchor;
+    [SerializeField] private int _playerId;
+
+    public Ingredient CarriedItem { get; private set; }
+    public bool IsCarrying => CarriedItem != null;
+    public Transform CarryAnchor => _carryAnchor;
+
+    public void Pickup(Ingredient item)
     {
-        [SerializeField] private Transform _carryAnchor;
-        public Transform CarryAnchor => _carryAnchor;
+        if (IsCarrying || item == null) return;
 
-        public GameObject HeldObject { get; private set; }
-        public bool HasItem => HeldObject != null;
+        CarriedItem = item;
+        item.transform.SetParent(_carryAnchor);
+        item.transform.localPosition = Vector3.zero;
+        item.transform.localRotation = Quaternion.identity;
 
-        public void Hold(GameObject obj)
-        {
-            HeldObject = obj;
-            if (obj == null) return;
-            obj.transform.SetParent(_carryAnchor);
-            obj.transform.localPosition = Vector3.zero;
-            obj.transform.localRotation = Quaternion.identity;
-        }
+        if (item.TryGetComponent<Collider>(out var col)) col.enabled = false;
+        if (item.TryGetComponent<Rigidbody>(out var rb)) rb.isKinematic = true;
 
-        public GameObject ReleaseHeld()
-        {
-            var obj = HeldObject;
-            HeldObject = null;
-            if (obj != null) obj.transform.SetParent(null);
-            return obj;
-        }
+        EventBus.Raise(new PlayerCarryChangedEvent { PlayerId = _playerId, Carried = item });
+    }
+
+    public Ingredient Drop()
+    {
+        if (!IsCarrying) return null;
+
+        var item = CarriedItem;
+        CarriedItem = null;
+        item.transform.SetParent(null);
+
+        if (item.TryGetComponent<Collider>(out var col)) col.enabled = true;
+        if (item.TryGetComponent<Rigidbody>(out var rb)) rb.isKinematic = false;
+
+        EventBus.Raise(new PlayerCarryChangedEvent { PlayerId = _playerId, Carried = null });
+        return item;
     }
 }

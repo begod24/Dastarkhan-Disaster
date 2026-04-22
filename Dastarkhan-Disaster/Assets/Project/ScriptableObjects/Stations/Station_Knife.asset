@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3af7b75d554ff584bb3c82c9b681627b, type: 3}
+  m_Name: Station_Knife
+  m_EditorClassIdentifier: Assembly-CSharp::StationConfigSO
+  _displayName: Knife
+  _acceptsState: 0
+  _producesState: 1
+  _acceptedIngredients:
+  - {fileID: 11400000, guid: 2cdf61f0da4ae7046857660eb9adc62a, type: 2}
+  _processDuration: 0
+  _capacity: 1
+  _canBurn: 0
+  _burnDelay: 5
