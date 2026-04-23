@@ -16,8 +16,8 @@ MonoBehaviour:
   _acceptsState: 0
   _producesState: 2
   _acceptedIngredients:
-  - {fileID: 11400000, guid: 2cdf61f0da4ae7046857660eb9adc62a, type: 2}
+  - {fileID: 11400000, guid: 18b1096bdad0dc947a3a188f949e78eb, type: 2}
   _processDuration: 3
   _capacity: 1
-  _canBurn: 0
+  _canBurn: 1
   _burnDelay: 5

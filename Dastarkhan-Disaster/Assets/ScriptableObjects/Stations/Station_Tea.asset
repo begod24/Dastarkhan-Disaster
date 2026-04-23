@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3af7b75d554ff584bb3c82c9b681627b, type: 3}
   m_Name: Station_Tea
   m_EditorClassIdentifier: Assembly-CSharp::StationConfigSO
-  _displayName: 
+  _displayName: Samovar
   _acceptsState: 0
-  _producesState: 0
-  _acceptedIngredients: []
-  _processDuration: 0
+  _producesState: 3
+  _acceptedIngredients:
+  - {fileID: 11400000, guid: c1e54754ef60c0b479717a6ea04d64b0, type: 2}
+  _processDuration: 12
   _capacity: 1
   _canBurn: 0
   _burnDelay: 5

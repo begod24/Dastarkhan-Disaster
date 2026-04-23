@@ -17,7 +17,8 @@ MonoBehaviour:
   _producesState: 3
   _acceptedIngredients:
   - {fileID: 11400000, guid: 2cdf61f0da4ae7046857660eb9adc62a, type: 2}
-  _processDuration: 10
+  - {fileID: 11400000, guid: c1e54754ef60c0b479717a6ea04d64b0, type: 2}
+  _processDuration: 7
   _capacity: 1
   _canBurn: 0
   _burnDelay: 5
