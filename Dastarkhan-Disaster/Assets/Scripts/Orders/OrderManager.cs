@@ -15,6 +15,7 @@ public class OrderManager : MonoBehaviour
     private float _spawnTimer;
     private int _nextOrderId = 1;
     private bool _spawningEnabled;
+    private bool _sessionEnded;
 
     public IReadOnlyList<ActiveOrder> ActiveOrders => _activeOrders;
 
@@ -22,6 +23,16 @@ public class OrderManager : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+    }
+
+    private void OnEnable()
+    {
+        EventBus.Subscribe<SessionEndedEvent>(OnSessionEnded);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe<SessionEndedEvent>(OnSessionEnded);
     }
 
     private void OnDestroy()
@@ -43,8 +54,15 @@ public class OrderManager : MonoBehaviour
         _spawnTimer = _initialDelay;
     }
 
+    private void OnSessionEnded(SessionEndedEvent e)
+    {
+        _sessionEnded = true;
+        _spawningEnabled = false;
+    }
+
     private void Update()
     {
+        if (_sessionEnded) return;
         TickTimers();
         HandleSpawning();
     }
@@ -112,6 +130,7 @@ public class OrderManager : MonoBehaviour
         matched = null;
         score = 0;
         if (item == null) return false;
+        if (_sessionEnded) return false;
 
         ActiveOrder best = null;
         for (int i = 0; i < _activeOrders.Count; i++)
