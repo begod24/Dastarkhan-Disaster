@@ -22,6 +22,8 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale <= 0f) return;
+
         UpdateNearest();
 
         if (_input.InteractPressed && _nearest != null && _nearest.CanInteract(_player))
