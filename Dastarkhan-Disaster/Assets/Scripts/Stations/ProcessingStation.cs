@@ -31,6 +31,46 @@ public class ProcessingStation : StationBase
             _slots[i] = new Slot { State = SlotState.Empty };
     }
 
+    public float GetProgress()
+    {
+        if (_slots == null || _config.ProcessDuration <= 0f) return 0f;
+        for (int i = 0; i < _slots.Length; i++)
+        {
+            var s = _slots[i];
+            if (s.State == SlotState.Processing)
+                return Mathf.Clamp01(s.Elapsed / _config.ProcessDuration);
+            if (s.State == SlotState.Ready) return 1f;
+        }
+        return 0f;
+    }
+
+    public StationVisualState GetVisualState()
+    {
+        if (_slots == null) return StationVisualState.Empty;
+        bool hasProcessing = false;
+        bool hasReady = false;
+        bool hasBurned = false;
+        bool nearBurn = false;
+
+        for (int i = 0; i < _slots.Length; i++)
+        {
+            var s = _slots[i];
+            if (s.State == SlotState.Processing) hasProcessing = true;
+            else if (s.State == SlotState.Ready)
+            {
+                hasReady = true;
+                if (_config.CanBurn && s.Elapsed > _config.BurnDelay * 0.6f) nearBurn = true;
+            }
+            else if (s.State == SlotState.Burned) hasBurned = true;
+        }
+
+        if (hasBurned) return StationVisualState.Burned;
+        if (nearBurn) return StationVisualState.AboutToBurn;
+        if (hasReady) return StationVisualState.Ready;
+        if (hasProcessing) return StationVisualState.Processing;
+        return StationVisualState.Empty;
+    }
+
     public override string InteractionPrompt
     {
         get
@@ -54,7 +94,10 @@ public class ProcessingStation : StationBase
         if (!player.Carry.IsCarrying)
         {
             if (TryTakeReadyItem(out var taken))
+            {
                 player.Carry.Pickup(taken);
+                EventBus.Raise(new StationItemTakenEvent { Station = this });
+            }
             return;
         }
 
@@ -66,6 +109,7 @@ public class ProcessingStation : StationBase
 
         player.Carry.Drop();
         PlaceInSlot(slotIndex, held);
+        EventBus.Raise(new StationItemPlacedEvent { Station = this });
     }
 
     private int FindEmptySlot()
@@ -125,6 +169,7 @@ public class ProcessingStation : StationBase
         slot.Item.SetState(_config.ProducesState);
         slot.State = SlotState.Ready;
         slot.Elapsed = 0f;
+        EventBus.Raise(new StationItemReadyEvent { Station = this });
     }
 
     private void Update()
@@ -146,6 +191,7 @@ public class ProcessingStation : StationBase
                 {
                     slot.Item.SetState(ProcessState.Burned);
                     slot.State = SlotState.Burned;
+                    EventBus.Raise(new StationItemBurnedEvent { Station = this });
                 }
             }
         }
@@ -158,4 +204,13 @@ public class ProcessingStation : StationBase
         foreach (var a in _slotAnchors)
             if (a != null) Gizmos.DrawWireSphere(a.position, 0.1f);
     }
+}
+
+public enum StationVisualState
+{
+    Empty,
+    Processing,
+    Ready,
+    AboutToBurn,
+    Burned
 }
