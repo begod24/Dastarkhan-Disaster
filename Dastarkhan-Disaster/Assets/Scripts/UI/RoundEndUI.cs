@@ -26,6 +26,7 @@ public class RoundEndUI : MonoBehaviour
     [SerializeField] private Button _mainMenuButton;
 
     [Header("Tuning")]
+    [SerializeField] private int _minScoreForStar = 1;
     [SerializeField] private float _threeStarRatio = 0.85f;
     [SerializeField] private float _twoStarRatio = 0.5f;
     [SerializeField] private string _victoryTitle = "FEAST COMPLETE";
@@ -50,12 +51,11 @@ public class RoundEndUI : MonoBehaviour
         if (_mainMenuButton != null) _mainMenuButton.onClick.RemoveListener(OnMainMenu);
     }
 
-private void OnSessionEnded(SessionEndedEvent e)
-{
-    Debug.Log($"[RoundEndUI] Session ended! Failed={e.Failed}, Score={e.FinalScore}, Completed={e.OrdersCompleted}");
-    Show(e);
-    Time.timeScale = 0f;
-}
+    private void OnSessionEnded(SessionEndedEvent e)
+    {
+        Show(e);
+        Time.timeScale = 0f;
+    }
 
     private void Show(SessionEndedEvent e)
     {
@@ -63,7 +63,8 @@ private void OnSessionEnded(SessionEndedEvent e)
 
         int stars = CalculateStars(e);
 
-        if (_titleText != null) _titleText.text = e.Failed ? _failTitle : _victoryTitle;
+        bool failed = e.Failed || stars == 0;
+        if (_titleText != null) _titleText.text = failed ? _failTitle : _victoryTitle;
         if (_scoreText != null) _scoreText.text = $"Score: {e.FinalScore}";
         if (_completedText != null) _completedText.text = $"Orders Completed: {e.OrdersCompleted}";
         if (_expiredText != null) _expiredText.text = $"Orders Expired: {e.OrdersExpired}";
@@ -76,6 +77,8 @@ private void OnSessionEnded(SessionEndedEvent e)
 
     private int CalculateStars(SessionEndedEvent e)
     {
+        if (e.FinalScore < _minScoreForStar) return 0;
+
         int total = e.OrdersCompleted + e.OrdersExpired;
         if (total == 0 || e.OrdersCompleted == 0) return 0;
 
