@@ -1,6 +1,6 @@
 # Dastarkhan Disaster
  
-**A 1-4 player co-op cooking chaos game set in the world of Kazakh cuisine and hospitality.**
+**A 1-4 player co-op cooking chaos game in Unity.**
  
 Prepare traditional Kazakh dishes — beshbarmak, baursaki, kurt, and more — for increasingly demanding guests across yurts, nomadic camps, and Nauryz celebration feasts.
  
