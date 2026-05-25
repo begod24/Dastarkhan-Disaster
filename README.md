@@ -28,15 +28,6 @@ Prepare traditional Kazakh dishes — beshbarmak, baursaki, kurt, and more — f
  
 Players scramble across the kitchen — chopping, boiling, frying, and assembling dishes — while the kitchen fights back with fires, broken equipment, wandering sheep, and limited counter space.
  
-| Detail       | Value                   |
-|--------------|-------------------------|
-| Genre        | Co-op Arcade            |
-| Players      | 1-4 (Local & Online)    |
-| Platform     | PC (Steam)              |
-| Engine       | Unity (C#)              |
-| Art Pipeline | Blender, Figma, GIMP    |
-| Price        | $9.99                   |
- 
 ---
  
 ## Core Mechanics
