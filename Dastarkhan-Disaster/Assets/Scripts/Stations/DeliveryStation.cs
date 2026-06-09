@@ -3,13 +3,14 @@ using UnityEngine;
 public class DeliveryStation : StationBase
 {
     public override string InteractionPrompt => $"{Label}: Deliver";
-    public override bool CanInteract(PlayerController player) => player.Carry.IsCarrying;
+    public override bool CanInteract(PlayerController player) => player.Carry.CarriedIngredient != null;
 
     public override void OnInteract(PlayerController player)
     {
-        if (!player.Carry.IsCarrying) return;
+        if (player.Carry.CarriedIngredient == null) return;
 
-        var item = player.Carry.Drop();
+        var item = player.Carry.CarriedIngredient;
+        player.Carry.Drop();
 
         bool delivered = false;
         int awarded = 0;

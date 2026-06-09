@@ -11,8 +11,10 @@ public class PlayerCarry : MonoBehaviour
     private PlayerInputHandler _input;
     private CharacterController _controller;
 
-    public Ingredient CarriedItem { get; private set; }
-    public bool IsCarrying => CarriedItem != null;
+    public ICarriable Carried { get; private set; }
+    public bool IsCarrying => Carried != null;
+    public Ingredient CarriedIngredient => Carried as Ingredient;
+    public Plate CarriedPlate => Carried as Plate;
     public Transform CarryAnchor => _carryAnchor;
 
     private void Awake()
@@ -27,38 +29,40 @@ public class PlayerCarry : MonoBehaviour
         if (_input != null && _input.DropPressed && IsCarrying) DropToGround();
     }
 
-    public void Pickup(Ingredient item)
+    public void Pickup(ICarriable item)
     {
         if (IsCarrying || item == null) return;
 
-        CarriedItem = item;
-        item.transform.SetParent(_carryAnchor);
-        item.transform.localPosition = Vector3.zero;
-        item.transform.localRotation = Quaternion.identity;
+        Carried = item;
+        var t = item.Transform;
+        t.SetParent(_carryAnchor);
+        t.localPosition = Vector3.zero;
+        t.localRotation = Quaternion.identity;
 
-        if (item.TryGetComponent<Rigidbody>(out var rb)) rb.isKinematic = true;
-        if (item.TryGetComponent<Collider>(out var col)) col.enabled = false;
+        if (t.TryGetComponent<Rigidbody>(out var rb)) rb.isKinematic = true;
+        if (t.TryGetComponent<Collider>(out var col)) col.enabled = false;
 
-        EventBus.Raise(new PlayerCarryChangedEvent { PlayerId = _playerId, Carried = item });
+        EventBus.Raise(new PlayerCarryChangedEvent { PlayerId = _playerId, Carried = CarriedIngredient, IsCarrying = true });
     }
 
-    public Ingredient Drop()
+    public ICarriable Drop()
     {
         if (!IsCarrying) return null;
 
-        var item = CarriedItem;
-        CarriedItem = null;
-        item.transform.SetParent(null);
+        var item = Carried;
+        Carried = null;
+        var t = item.Transform;
+        t.SetParent(null);
 
-        if (item.TryGetComponent<Collider>(out var col)) col.enabled = true;
-        if (item.TryGetComponent<Rigidbody>(out var rb))
+        if (t.TryGetComponent<Collider>(out var col)) col.enabled = true;
+        if (t.TryGetComponent<Rigidbody>(out var rb))
         {
             rb.isKinematic = false;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
 
-        EventBus.Raise(new PlayerCarryChangedEvent { PlayerId = _playerId, Carried = null });
+        EventBus.Raise(new PlayerCarryChangedEvent { PlayerId = _playerId, Carried = null, IsCarrying = false });
         return item;
     }
 
@@ -69,11 +73,11 @@ public class PlayerCarry : MonoBehaviour
 
         float playerRadius = _controller != null ? _controller.radius : 0.5f;
         float itemRadius = 0.25f;
-        if (item.TryGetComponent<Collider>(out var itemCol))
+        if (item.Transform.TryGetComponent<Collider>(out var itemCol))
             itemRadius = itemCol.bounds.extents.magnitude;
 
         float forwardDist = playerRadius + itemRadius + _dropExtraDistance;
         Vector3 dropPos = transform.position + transform.forward * forwardDist + Vector3.up * _dropUpOffset;
-        item.transform.position = dropPos;
+        item.Transform.position = dropPos;
     }
 }

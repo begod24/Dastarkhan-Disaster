@@ -8,6 +8,7 @@ public struct PlayerCarryChangedEvent
 {
     public int PlayerId;
     public Ingredient Carried;
+    public bool IsCarrying;
 }
 
 public struct NearestInteractableChangedEvent

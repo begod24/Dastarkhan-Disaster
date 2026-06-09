@@ -85,7 +85,7 @@ public class ProcessingStation : StationBase
     {
         if (_slots == null) return false;
         if (player.Carry.IsCarrying)
-            return _config.AcceptsItem(player.Carry.CarriedItem) && FindEmptySlot() >= 0;
+            return _config.AcceptsItem(player.Carry.CarriedIngredient) && FindEmptySlot() >= 0;
         return HasReadyItem();
     }
 
@@ -101,7 +101,7 @@ public class ProcessingStation : StationBase
             return;
         }
 
-        var held = player.Carry.CarriedItem;
+        var held = player.Carry.CarriedIngredient;
         if (!_config.AcceptsItem(held)) return;
 
         int slotIndex = FindEmptySlot();

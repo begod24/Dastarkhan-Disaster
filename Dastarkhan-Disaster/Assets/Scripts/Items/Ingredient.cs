@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Ingredient : MonoBehaviour, IInteractable
+public class Ingredient : MonoBehaviour, IInteractable, ICarriable
 {
     [SerializeField] private IngredientSO _data;
     [SerializeField] private ProcessState _state;
@@ -8,6 +8,7 @@ public class Ingredient : MonoBehaviour, IInteractable
 
     public IngredientSO Data => _data;
     public ProcessState State => _state;
+    public Transform Transform => transform;
     public string DisplayName => _data != null ? _data.DisplayName : name;
     public string InteractionPrompt => $"Pick up {DisplayName}";
 

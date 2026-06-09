@@ -95,7 +95,7 @@ public class AudioManager : MonoBehaviour
     private void OnCarryChanged(PlayerCarryChangedEvent e)
     {
         if (_library == null) return;
-        if (e.Carried != null) Play2D(_library.Pickup);
+        if (e.IsCarrying) Play2D(_library.Pickup);
         else Play2D(_library.Drop, 0.7f);
     }
 
