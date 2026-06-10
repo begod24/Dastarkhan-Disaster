@@ -19,12 +19,12 @@ public class OrderCardUI : MonoBehaviour
     public void Bind(ActiveOrder order)
     {
         OrderId = order.Id;
-        if (_nameText != null) _nameText.text = order.Recipe.DisplayName;
+        if (_nameText != null) _nameText.text = order.DisplayName;
         if (_iconImage != null)
         {
-            if (order.Recipe.Icon != null)
+            if (order.Icon != null)
             {
-                _iconImage.sprite = order.Recipe.Icon;
+                _iconImage.sprite = order.Icon;
                 _iconImage.enabled = true;
             }
             else

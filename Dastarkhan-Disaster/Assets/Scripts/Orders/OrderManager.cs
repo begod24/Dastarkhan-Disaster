@@ -6,6 +6,7 @@ public class OrderManager : MonoBehaviour
     public static OrderManager Instance { get; private set; }
 
     [SerializeField] private List<RecipeSO> _availableRecipes = new();
+    [SerializeField] private List<PlatedRecipeSO> _platedRecipes = new();
     [SerializeField] private float _spawnInterval = 15f;
     [SerializeField] private int _maxConcurrentOrders = 3;
     [SerializeField] private float _initialDelay = 3f;
@@ -90,7 +91,7 @@ public class OrderManager : MonoBehaviour
     private void HandleSpawning()
     {
         if (!_spawningEnabled) return;
-        if (_availableRecipes.Count == 0) return;
+        if (_availableRecipes.Count + _platedRecipes.Count == 0) return;
         if (_activeOrders.Count >= _maxConcurrentOrders) return;
 
         _spawnTimer -= Time.deltaTime;
@@ -102,9 +103,11 @@ public class OrderManager : MonoBehaviour
 
     public ActiveOrder SpawnRandomOrder()
     {
-        if (_availableRecipes.Count == 0) return null;
-        var recipe = _availableRecipes[Random.Range(0, _availableRecipes.Count)];
-        return SpawnOrder(recipe);
+        int total = _availableRecipes.Count + _platedRecipes.Count;
+        if (total == 0) return null;
+        int pick = Random.Range(0, total);
+        if (pick < _availableRecipes.Count) return SpawnOrder(_availableRecipes[pick]);
+        return SpawnOrder(_platedRecipes[pick - _availableRecipes.Count]);
     }
 
     public ActiveOrder SpawnOrder(RecipeSO recipe)
@@ -115,6 +118,24 @@ public class OrderManager : MonoBehaviour
         {
             Id = _nextOrderId++,
             Recipe = recipe,
+            TimeLimit = recipe.TimeLimit,
+            TimeRemaining = recipe.TimeLimit,
+            State = OrderState.Pending
+        };
+
+        _activeOrders.Add(order);
+        EventBus.Raise(new OrderSpawnedEvent { Order = order });
+        return order;
+    }
+
+    public ActiveOrder SpawnOrder(PlatedRecipeSO recipe)
+    {
+        if (recipe == null) return null;
+
+        var order = new ActiveOrder
+        {
+            Id = _nextOrderId++,
+            PlatedRecipe = recipe,
             TimeLimit = recipe.TimeLimit,
             TimeRemaining = recipe.TimeLimit,
             State = OrderState.Pending
@@ -137,14 +158,45 @@ public class OrderManager : MonoBehaviour
         {
             var o = _activeOrders[i];
             if (o.State != OrderState.Pending) continue;
+            if (o.Recipe == null) continue;
             if (!o.Recipe.Matches(item)) continue;
             if (best == null || o.TimeRemaining < best.TimeRemaining) best = o;
         }
 
         if (best == null) return false;
 
-        float speedBonus = Mathf.RoundToInt(best.TimeRemaining * 10f);
-        score = best.Recipe.BaseScore + (int)speedBonus;
+        int speedBonus = Mathf.RoundToInt(best.TimeRemaining * 10f);
+        score = best.BaseScore + speedBonus;
+
+        best.State = OrderState.Delivered;
+        _activeOrders.Remove(best);
+
+        matched = best;
+        EventBus.Raise(new OrderCompletedEvent { Order = best, Score = score });
+        return true;
+    }
+
+    public bool TryDeliver(Plate plate, out ActiveOrder matched, out int score)
+    {
+        matched = null;
+        score = 0;
+        if (plate == null) return false;
+        if (_sessionEnded) return false;
+
+        ActiveOrder best = null;
+        for (int i = 0; i < _activeOrders.Count; i++)
+        {
+            var o = _activeOrders[i];
+            if (o.State != OrderState.Pending) continue;
+            if (o.PlatedRecipe == null) continue;
+            if (!o.PlatedRecipe.Matches(plate.Contents)) continue;
+            if (best == null || o.TimeRemaining < best.TimeRemaining) best = o;
+        }
+
+        if (best == null) return false;
+
+        int speedBonus = Mathf.RoundToInt(best.TimeRemaining * 10f);
+        score = best.BaseScore + speedBonus;
 
         best.State = OrderState.Delivered;
         _activeOrders.Remove(best);

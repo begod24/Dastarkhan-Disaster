@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b8068f229e44584daede4588bbb060f, type: 3}
+  m_Name: Recipe_Beshbarmak
+  m_EditorClassIdentifier: Assembly-CSharp::PlatedRecipeSO
+  _displayName: Beshbarmak
+  _icon: {fileID: 0}
+  _requirements:
+  - Ingredient: {fileID: 11400000, guid: 2cdf61f0da4ae7046857660eb9adc62a, type: 2}
+    State: 3
+  - Ingredient: {fileID: 11400000, guid: c91f830275782534c9ea053270913392, type: 2}
+    State: 3
+  - Ingredient: {fileID: 11400000, guid: b092400251f705f4495ebc08ddf1a2a2, type: 2}
+    State: 1
+  _timeLimit: 60
+  _baseScore: 300
